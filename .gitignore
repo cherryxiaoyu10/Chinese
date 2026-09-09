@@ -1,0 +1,18 @@
+# Godot generated files
+.godot/
+.import/
+export.cfg
+export_presets.cfg
+
+# Build and runtime output
+build/
+exports/
+*.tmp
+*.log
+
+# macOS
+.DS_Store
+
+# Local editor files
+.vscode/
+.idea/

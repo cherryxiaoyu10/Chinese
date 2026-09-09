@@ -1,0 +1,4 @@
+interface:
+  display_name: "语文卡牌游戏 Studio"
+  short_description: "组织初中语文像素卡牌冒险游戏的多 Agent 协作"
+  default_prompt: "使用 $chinese-literature-card-game-studio 规划或开发这款初中语文卡牌构筑冒险游戏。先由分类负责人收口，再分派执行 Agent。"
