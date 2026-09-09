@@ -150,16 +150,58 @@ def esc(value):
     return str(value).replace("|", "／").replace("\n", " ").replace("<", "&lt;").replace(">", "&gt;")
 
 
+def daily_brief(data):
+    tasks = data["tasks"]
+    dev = [t for t in tasks if t["stage_id"] != "BASE"]
+    accepted = sum(t["status"] == "accepted" for t in dev)
+    total = len(dev)
+    percent = round(accepted * 100 / total) if total else 100
+    width = 20
+    filled = round(width * accepted / total) if total else width
+    bar = "█" * filled + "░" * (width - filled)
+    index = {t["id"]: t for t in tasks}
+    ready = [t for t in tasks if t["stage_id"] != "BASE" and t["status"] in {"pending", "needs_rework"}
+             and all(index[d]["status"] == "accepted" for d in t["dependencies"])]
+    next_task = ready[0] if ready else None
+    current = None
+    current_items = []
+    for stage in data["stages"]:
+        if stage["id"] == "BASE":
+            continue
+        items = [t for t in tasks if t["stage_id"] == stage["id"]]
+        if phase_status(stage, items) != "已验收":
+            current, current_items = stage, items
+            break
+    if current is None and data["stages"]:
+        current = data["stages"][-1]
+    sentence = f"开发任务完成 {accepted}/{total}（{percent}%），当前位于 {current['id']}「{current['name']}」· {phase_status(current, current_items)}。"
+    next_text = (f"{next_task['id']}「{next_task['title']}」——负责人 {next_task['owner']}；{next_task['acceptance'][0]}"
+                 if next_task else "当前没有满足前置依赖的任务；请先处理阻塞或等待阶段门验收。")
+    diagram = ["flowchart LR"]
+    for i, stage in enumerate(data["stages"]):
+        items = [t for t in tasks if t["stage_id"] == stage["id"]]
+        label = f"{stage['id']} {stage['name']}\\n{phase_status(stage, items)}"
+        diagram.append(f"    {stage['id']}[{label}]")
+        if i:
+            diagram.append(f"    {data['stages'][i-1]['id']} --> {stage['id']}")
+    return {"bar": bar, "percent": percent, "accepted": accepted, "total": total,
+            "sentence": sentence, "next": next_text, "current": current, "diagram": "\n".join(diagram)}
+
+
 def render(data):
     tasks = data["tasks"]
     index = {t["id"]: t for t in tasks}
     dev = [t for t in tasks if t["stage_id"] != "BASE"]
     accepted = sum(t["status"] == "accepted" for t in dev)
+    brief = daily_brief(data)
     lines = ["# 《文脉尖塔》项目台账", "", "> 由台账工具生成，请通过配套 Skill 更新；JSON 为唯一状态来源。", "",
              f"- 修订号：{data['revision']}；更新时间：{data['updated_at']}",
              f"- 开发与阶段门任务已验收：{accepted}/{len(dev)}（等权任务计数，不是工时完成率）",
              "- 基础文档交付单独统计，不代表 MVP、Demo 或产品验收通过。",
              "- [状态数据](../management/project-ledger.json) · [周期计划](PROJECT_PLAN.md) · [台账 Skill](../skills/game-project-ledger/SKILL.md)", "",
+             "## 每日简报", "", f"**进度：** `{brief['bar']}` {brief['percent']}%（开发任务 {brief['accepted']}/{brief['total']}）", "",
+             f"**当前所处位置：** {esc(brief['sentence'])}", "", f"**下一项最适合任务：** {esc(brief['next'])}", "",
+             "```mermaid", brief["diagram"], "```", "",
              "## 阶段总览", "", "|阶段|计划窗口|状态|已验收/任务总数|收口人|", "|---|---|---|---:|---|"]
     for stage in data["stages"]:
         items = [t for t in tasks if t["stage_id"] == stage["id"]]
@@ -212,7 +254,7 @@ def atomic_write(path, text):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--root", required=True, help="项目根目录，台账必须已存在")
-    p.add_argument("command", choices=["status", "show", "validate", "render", "start", "submit", "accept", "block", "reopen", "add", "edit"])
+    p.add_argument("command", choices=["status", "brief", "show", "validate", "render", "start", "submit", "accept", "block", "reopen", "add", "edit"])
     p.add_argument("task_id", nargs="?")
     p.add_argument("--actor")
     p.add_argument("--expected-revision", type=int)
@@ -226,7 +268,7 @@ def main():
     view_path = root / "docs/PROJECT_LEDGER.md"
     require(ledger_path.is_file(), "项目没有台账；不要在错误目录自动初始化")
     lock_path = root / "management/.ledger.lock"
-    mutation = a.command not in {"status", "show", "validate", "render"}
+    mutation = a.command not in {"status", "brief", "show", "validate", "render"}
     lock_fd = None
     try:
         if mutation or a.command == "render":
@@ -249,6 +291,15 @@ def main():
             print(json.dumps({"revision": data["revision"], "stages": [{"id": s["id"], "name": s["name"], "status": phase_status(s, [t for t in data["tasks"] if t["stage_id"] == s["id"]])} for s in data["stages"]],
                               "active": [t["id"] for t in data["tasks"] if t["status"] in {"in_progress", "in_review", "blocked"}],
                               "ready": [t["id"] for t in data["tasks"] if t["status"] in {"pending", "needs_rework"} and all(index[d]["status"] == "accepted" for d in t["dependencies"])]}, ensure_ascii=False, indent=2))
+            return
+        if a.command == "brief":
+            b = daily_brief(data)
+            print(f"每日简报（台账修订 {data['revision']}）")
+            print(f"进度：{b['bar']} {b['percent']}%（开发任务 {b['accepted']}/{b['total']}）")
+            print(f"当前位置：{b['sentence']}")
+            print(f"下一项：{b['next']}")
+            print("项目结构：")
+            print(b["diagram"])
             return
         require(a.task_id, "需要任务 ID")
         if a.command == "show":

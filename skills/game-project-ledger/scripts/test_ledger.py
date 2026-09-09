@@ -106,6 +106,15 @@ class LedgerBehavior(unittest.TestCase):
         # Gate is not yet eligible, and a normal task can use its category lead.
         run(self.root, "start", "P0-GATE", "--actor", "producer-director", "--expected-revision", "2", ok=False)
 
+    def test_daily_brief_contains_progress_next_task_and_structure(self):
+        output = run(self.root, "brief").stdout
+        self.assertIn("每日简报", output)
+        self.assertIn("进度：", output)
+        self.assertIn("开发任务 0/4", output)
+        self.assertIn("下一项：P0-01", output)
+        self.assertIn("flowchart LR", output)
+        self.assertIn("P0", output)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

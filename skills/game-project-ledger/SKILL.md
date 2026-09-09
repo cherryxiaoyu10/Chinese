@@ -42,6 +42,7 @@ metadata:
 
 ```bash
 python3 skills/game-project-ledger/scripts/ledger.py --root . status
+python3 skills/game-project-ledger/scripts/ledger.py --root . brief
 python3 skills/game-project-ledger/scripts/ledger.py --root . validate
 python3 skills/game-project-ledger/scripts/ledger.py --root . show P1-01
 python3 skills/game-project-ledger/scripts/ledger.py --root . start P1-01 --actor gameplay-engineer --expected-revision 0
@@ -53,6 +54,16 @@ python3 skills/game-project-ledger/scripts/ledger.py --root . render
 ```
 
 `accept` 前需要先把独立的验收记录 JSON 放入项目目录。验收记录的格式和字段说明见 [references/ledger-schema.md](references/ledger-schema.md)。
+
+## “每日简报”模式
+
+当用户问“每日简报”时，只读取台账并运行 `brief`，不要自动开始、修改或验收任务。简报必须包含：
+
+- 一句话完成进度和等宽进度条；
+- 按阶段顺序、前置依赖和任务状态选出的下一项最适合任务，并给出简短描述；
+- 当前所在阶段、已交付/已验收阶段和待开始阶段的 Mermaid 结构图。
+
+`brief` 的结果也会写入 `docs/PROJECT_LEDGER.md` 的“每日简报”区域。若台账校验失败，先报告失败原因，不生成看似正常的进度结论。
 
 ## 台账文件
 
