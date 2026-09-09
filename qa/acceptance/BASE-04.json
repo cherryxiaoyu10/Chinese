@@ -1,0 +1,22 @@
+{
+  "task_id": "BASE-04",
+  "reviewer": "project-agent",
+  "role": "producer-director",
+  "mode": "self_check",
+  "result": "pass",
+  "summary": "基线交付已按登记标准逐条核验；不代表游戏功能阶段完成。",
+  "checks": [
+    {
+      "criterion": 1,
+      "result": "pass",
+      "evidence": "qa/evidence/BASE-04.md",
+      "detail": "周期计划覆盖用户指定阶段及补充阶段。"
+    },
+    {
+      "criterion": 2,
+      "result": "pass",
+      "evidence": "qa/evidence/BASE-04.md",
+      "detail": "计划任务、阶段门和技术依赖已拆入台账。"
+    }
+  ]
+}

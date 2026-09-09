@@ -1,0 +1,2 @@
+已重建 docs/PROJECT_LEDGER.md
+PASS: schema, DAG, evidence hashes, history, phase gates, view

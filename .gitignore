@@ -16,3 +16,6 @@ exports/
 # Local editor files
 .vscode/
 .idea/
+
+# Python helper cache
+__pycache__/

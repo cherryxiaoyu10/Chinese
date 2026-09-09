@@ -1,0 +1,22 @@
+{
+  "task_id": "BASE-02",
+  "reviewer": "project-agent",
+  "role": "producer-director",
+  "mode": "self_check",
+  "result": "pass",
+  "summary": "基线交付已按登记标准逐条核验；不代表游戏功能阶段完成。",
+  "checks": [
+    {
+      "criterion": 1,
+      "result": "pass",
+      "evidence": "qa/evidence/BASE-02.md",
+      "detail": "PRD 与 TDD 存在且为 Draft v0.1。"
+    },
+    {
+      "criterion": 2,
+      "result": "pass",
+      "evidence": "qa/evidence/BASE-02.md",
+      "detail": "PRD 与 TDD 的目标、Slice A、架构和测试策略相互引用。"
+    }
+  ]
+}

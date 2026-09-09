@@ -1,0 +1,4 @@
+interface:
+  display_name: "游戏项目台账"
+  short_description: "开发前读取阶段与任务依赖，验收后凭证据更新项目台账"
+  default_prompt: "使用 $game-project-ledger 读取当前项目台账，登记本次开发任务，并在验收完成后更新状态和证据。"

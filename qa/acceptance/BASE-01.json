@@ -1,0 +1,22 @@
+{
+  "task_id": "BASE-01",
+  "reviewer": "project-agent",
+  "role": "producer-director",
+  "mode": "self_check",
+  "result": "pass",
+  "summary": "基线交付已按登记标准逐条核验；不代表游戏功能阶段完成。",
+  "checks": [
+    {
+      "criterion": 1,
+      "result": "pass",
+      "evidence": "qa/evidence/BASE-01.md",
+      "detail": "Studio 章程文件存在并包含分类负责人、收口规则和工作流程。"
+    },
+    {
+      "criterion": 2,
+      "result": "pass",
+      "evidence": "qa/evidence/BASE-01.md",
+      "detail": "全局 Studio Skill 与项目副本均存在并可读取。"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "task_id": "BASE-05",
+  "reviewer": "project-agent",
+  "role": "producer-director",
+  "mode": "self_check",
+  "result": "pass",
+  "summary": "基线交付已按登记标准逐条核验；不代表游戏功能阶段完成。",
+  "checks": [
+    {
+      "criterion": 1,
+      "result": "pass",
+      "evidence": "qa/evidence/BASE-05.md",
+      "detail": "台账覆盖 BASE 与 P0–P8 阶段及计划任务。"
+    },
+    {
+      "criterion": 2,
+      "result": "pass",
+      "evidence": "qa/evidence/BASE-05.md",
+      "detail": "Studio Skill 已联动台账 Skill，且全局/项目副本一致。"
+    },
+    {
+      "criterion": 3,
+      "result": "pass",
+      "evidence": "qa/evidence/BASE-05-tool-tests.txt",
+      "detail": "工具正常/异常路径测试、JSON 校验和 Markdown 视图校验通过。"
+    }
+  ]
+}

@@ -205,6 +205,8 @@ flowchart TB
 
 ## 4. 协作协议
 
+本项目配套使用 `game-project-ledger` Skill。阶段与任务状态以 [`management/project-ledger.json`](management/project-ledger.json) 为唯一来源，可读进度见 [`docs/PROJECT_LEDGER.md`](docs/PROJECT_LEDGER.md)。每个开发任务开始前必须读取并校验台账、锁定任务 ID 和前置依赖；分类负责人收口并完成验收后，必须登记产物、逐条证据、验收者和修订号，再提交台账更新。
+
 ### 4.1 任务卡格式
 
 每个 Agent 开始工作前，先写一张任务卡：
